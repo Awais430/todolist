@@ -2,9 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const TodoModel = require("./Models/Todo");
-
+const path = require("path");
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -12,6 +11,7 @@ mongoose.connect(
   "mongodb+srv://hamza:awais%40786@cluster0.87g7xmx.mongodb.net/mydb?retryWrites=true&w=majority",
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
+console.log("dirname", __dirname);
 
 const db = mongoose.connection;
 
@@ -50,6 +50,13 @@ app.post("/add", (req, res) => {
   })
     .then((result) => res.json(result))
     .catch((err) => res.json(err));
+});
+app.use(express.static(path.join(__dirname, "/todolist/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "todolist", "dist", "index.html"));
+  console.log("Resolved file path:", filePath);
+  res.sendFile(filePath);
 });
 
 app.listen(3001, () => {
